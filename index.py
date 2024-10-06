@@ -28,7 +28,7 @@ def adb_past_text(device_serial):
     random_chars = random_string(5)
     command = f'shell input text "%s{random_chars}"'
     adb_command(command, device_serial)
-    print(f"Pasted text to {device_serial}")
+    print(f"[{device_serial}] Pasted text")
 
 def adb_send_enter(device_serial):
     command = "shell input keyevent 66"
