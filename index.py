@@ -3,58 +3,66 @@ import random
 import string
 import time
 
-# Đường dẫn đầy đủ đến ADB trong thư mục platform-tools
-ADB_PATH = "platform-tools/adb.exe"  # Cập nhật đường dẫn ADB tại đây
-
-# Hàm thực hiện lệnh adb thông qua cmd
-def adb_command(command):
-    full_command = f'cmd /c "{ADB_PATH} {command}"'
+# Hàm thực hiện lệnh adb cho một thiết bị cụ thể (theo serial)
+def adb_command(command, device_serial):
+    full_command = f'adb -s {device_serial} {command}'
     process = subprocess.Popen(full_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     if process.returncode != 0:
-        print(f"Error: {stderr.decode('utf-8')}")
+        print(f"Error on device {device_serial}: {stderr.decode('utf-8')}")
     return stdout.decode('utf-8')
 
-# Hàm click vào vị trí (x, y)
-def adb_click(x, y):
+# Lấy danh sách các thiết bị kết nối
+def get_connected_devices():
+    result = subprocess.run("adb devices", shell=True, capture_output=True, text=True)
+    lines = result.stdout.splitlines()[1:]  # Bỏ qua dòng đầu tiên "List of devices attached"
+    devices = [line.split()[0] for line in lines if "device" in line]
+    return devices
+
+# Hàm click vào vị trí (x, y) cho một thiết bị cụ thể
+def adb_click(x, y, device_serial):
     command = f"shell input tap {x} {y}"
-    adb_command(command)
+    adb_command(command, device_serial)
 
-# Hàm nhập văn bản
-def adb_input_text(text):
+# Hàm nhập văn bản cho một thiết bị cụ thể
+def adb_input_text(text, device_serial):
     command = f'shell input text "{text}"'
-    adb_command(command)
+    adb_command(command, device_serial)
 
-# Hàm gửi event "Enter"
-def adb_send_enter():
+# Hàm gửi event "Enter" cho một thiết bị cụ thể
+def adb_send_enter(device_serial):
     command = "shell input keyevent 66"  # KeyEvent 66 là Enter
-    adb_command(command)
+    adb_command(command, device_serial)
 
 # Tạo chuỗi ngẫu nhiên gồm 5 ký tự (chỉ bao gồm chữ cái và số)
 def random_string(length=5):
     chars = string.ascii_letters + string.digits  # Chữ cái và số
     return ''.join(random.choice(chars) for _ in range(length))
 
-# Main loop
+# Main loop điều khiển tất cả các thiết bị
 def main_loop():
+    devices = get_connected_devices()
+    if not devices:
+        print("No devices connected.")
+        return
+    
     while True:
-        # Bước 1: Click vào điểm thứ nhất (x=676, y=675)
-        adb_click(676, 675)
+        for device in devices:
+            # Bước 1: Click vào điểm thứ nhất (x=676, y=675) cho từng thiết bị
+            adb_click(676, 675, device)
 
-        # Bước 2: Tạo chuỗi ngẫu nhiên và nhập văn bản
-        random_chars = random_string(5)
-        input_text = f"Test Click{random_chars}"
+            # Bước 2: Tạo chuỗi ngẫu nhiên và nhập văn bản cho từng thiết bị
+            random_chars = random_string(5)
+            input_text = f"Test Click{random_chars}"
+            adb_input_text(input_text, device)
 
-        # Bước 3: Nhập văn bản vào thiết bị
-        adb_input_text(input_text)
+            # Bước 3: Gửi event Enter cho từng thiết bị
+            adb_send_enter(device)
 
-        # Bước 4: Gửi event Enter
-        adb_send_enter()
+            # Bước 4: Click vào điểm thứ hai (x=859, y=675) cho từng thiết bị
+            adb_click(859, 675, device)
 
-        # Bước 5: Click vào điểm thứ hai (x=859, y=675)
-        adb_click(859, 675)
-
-        # Bước 6: Đợi 30 giây trước khi lặp lại
+        # Bước 5: Đợi 30 giây trước khi lặp lại
         time.sleep(30)
 
 if __name__ == "__main__":
