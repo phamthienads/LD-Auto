@@ -23,9 +23,12 @@ def adb_click(x, y, device_serial):
     print(f"[{device_serial}] Clicked at ({x}, {y})")
 
 def adb_input_text(device_serial):
-    command = f'shell am broadcast -a ADB_INPUT_CHARS --eia chars "84,259,110,103,32,65,99,99,32,70,114,101"'
+    text = "Tặng Acc Free"
+    unicode = [ord(char) for char in text]
+    unicode_str = ",".join(map(str, unicode))
+    command = f'shell am broadcast -a ADB_INPUT_CHARS --eia chars {unicode_str}'
     adb_command(command, device_serial)
-    print(f"{device_serial}")
+    print(f"Send to {device_serial}: {text}")
 
 def adb_send_enter(device_serial):
     command = "shell input keyevent 66"
