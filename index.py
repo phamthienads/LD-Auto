@@ -3,12 +3,9 @@ import random
 import string
 import time
 
-# Đường dẫn đầy đủ đến ADB trong thư mục platform-tools
-ADB_PATH = "platform-tools/adb.exe"  # Cập nhật đường dẫn ADB tại đây
-
 # Hàm thực hiện lệnh adb thông qua cmd
 def adb_command(command):
-    full_command = f'cmd /c "{ADB_PATH} {command}"'
+    full_command = f'adb {command}'
     process = subprocess.Popen(full_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     if process.returncode != 0:
