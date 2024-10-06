@@ -3,9 +3,9 @@ import random
 import string
 import time
 
-# Hàm thực hiện lệnh adb thông qua cmd
-def adb_command(command):
-    full_command = f'adb {command}'
+# Hàm thực hiện lệnh adb cho một thiết bị cụ thể (theo serial)
+def adb_command(command, device_serial):
+    full_command = f'adb -s {device_serial} {command}'
     process = subprocess.Popen(full_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     if process.returncode != 0:
