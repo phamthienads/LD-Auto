@@ -3,9 +3,13 @@ import random
 import string
 import time
 
-# Hàm thực hiện lệnh adb
+# Đường dẫn đầy đủ đến ADB trong thư mục platform-tools
+ADB_PATH = "C:/platform-tools/adb"  # Cập nhật đường dẫn ADB tại đây
+
+# Hàm thực hiện lệnh adb với đường dẫn đầy đủ
 def adb_command(command):
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    full_command = f"{ADB_PATH} {command}"
+    process = subprocess.Popen(full_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     if process.returncode != 0:
         print(f"Error: {stderr.decode('utf-8')}")
@@ -13,17 +17,17 @@ def adb_command(command):
 
 # Hàm click vào vị trí (x, y)
 def adb_click(x, y):
-    command = f"adb shell input tap {x} {y}"
+    command = f"shell input tap {x} {y}"
     adb_command(command)
 
 # Hàm nhập văn bản
 def adb_input_text(text):
-    command = f'adb shell input text "{text}"'
+    command = f'shell input text "{text}"'
     adb_command(command)
 
 # Hàm gửi event "Enter"
 def adb_send_enter():
-    command = "adb shell input keyevent 66"  # KeyEvent 66 là Enter
+    command = "shell input keyevent 66"  # KeyEvent 66 là Enter
     adb_command(command)
 
 # Tạo chuỗi ngẫu nhiên gồm 5 ký tự (chỉ bao gồm chữ cái và số)
