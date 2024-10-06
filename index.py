@@ -27,7 +27,7 @@ def adb_click(x, y, device_serial):
 
 # Hàm nhập văn bản cho một thiết bị cụ thể
 def adb_input_text(text, device_serial):
-    command = f'shell input text "{text}"'
+    command = f'adb shell am broadcast -a ADB_INPUT_CHARS --eia chars "{text}"'
     adb_command(command, device_serial)
     print(f"[{device_serial}] Input text: {text}")
 
