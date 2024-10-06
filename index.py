@@ -26,10 +26,10 @@ def adb_click(x, y, device_serial):
     print(f"[{device_serial}] Clicked at ({x}, {y})")
 
 # Hàm nhập văn bản cho một thiết bị cụ thể
-def adb_input_text(text, device_serial):
-    command = f'adb shell am broadcast -a ADB_INPUT_CHARS --eia chars "{text}"'
+def adb_input_text(device_serial):
+    command = f'shell am broadcast -a ADB_INPUT_CHARS --eia chars "84,259,110,103,32,65,99,99,32,70,114,101"'
     adb_command(command, device_serial)
-    print(f"[{device_serial}] Input text: {text}")
+    print(f"{device_serial}")
 
 # Hàm gửi event "Enter" cho một thiết bị cụ thể
 def adb_send_enter(device_serial):
@@ -58,25 +58,18 @@ def main_loop():
     
     while True:
         for device in devices:
-            # Bước 1: Click vào điểm thứ nhất (x=676, y=675) cho từng thiết bị
-            adb_click(676, 675, device)
+            # adb_click(676, 675, device)
+            #time.sleep(1)  # Chờ 1 giây
+
+            adb_input_text(device)
             time.sleep(1)  # Chờ 1 giây
 
-            # Bước 2: Tạo chuỗi ngẫu nhiên và nhập văn bản cho từng thiết bị
-            random_chars = random_string(5)
-            input_text = f"Test Click {random_chars}"
-            adb_input_text(input_text, device)
-            time.sleep(1)  # Chờ 1 giây
+            # adb_send_enter(device)
+            # time.sleep(1)  # Chờ 1 giây
 
-            # Bước 3: Gửi event Enter cho từng thiết bị
-            adb_send_enter(device)
-            time.sleep(1)  # Chờ 1 giây
+            # adb_click(859, 675, device)
+            # time.sleep(1)  # Chờ 1 giây
 
-            # Bước 4: Click vào điểm thứ hai (x=859, y=675) cho từng thiết bị
-            adb_click(859, 675, device)
-            time.sleep(1)  # Chờ 1 giây
-
-        # Bước 5: Đếm ngược trong 30 giây trước khi lặp lại
         countdown(30)
 
 if __name__ == "__main__":
