@@ -23,21 +23,31 @@ def get_connected_devices():
 def adb_click(x, y, device_serial):
     command = f"shell input tap {x} {y}"
     adb_command(command, device_serial)
+    print(f"[{device_serial}] Clicked at ({x}, {y})")
 
 # Hàm nhập văn bản cho một thiết bị cụ thể
 def adb_input_text(text, device_serial):
     command = f'shell input text "{text}"'
     adb_command(command, device_serial)
+    print(f"[{device_serial}] Input text: {text}")
 
 # Hàm gửi event "Enter" cho một thiết bị cụ thể
 def adb_send_enter(device_serial):
     command = "shell input keyevent 66"  # KeyEvent 66 là Enter
     adb_command(command, device_serial)
+    print(f"[{device_serial}] Sent Enter key event")
 
 # Tạo chuỗi ngẫu nhiên gồm 5 ký tự (chỉ bao gồm chữ cái và số)
 def random_string(length=5):
     chars = string.ascii_letters + string.digits  # Chữ cái và số
     return ''.join(random.choice(chars) for _ in range(length))
+
+# Hiển thị đếm ngược trong quá trình chờ
+def countdown(seconds):
+    for remaining in range(seconds, 0, -1):
+        print(f"Waiting: {remaining} seconds remaining", end='\r')
+        time.sleep(1)
+    print("\n")
 
 # Main loop điều khiển tất cả các thiết bị
 def main_loop():
@@ -62,8 +72,8 @@ def main_loop():
             # Bước 4: Click vào điểm thứ hai (x=859, y=675) cho từng thiết bị
             adb_click(859, 675, device)
 
-        # Bước 5: Đợi 30 giây trước khi lặp lại
-        time.sleep(30)
+        # Bước 5: Đếm ngược trong 30 giây trước khi lặp lại
+        countdown(30)
 
 if __name__ == "__main__":
     main_loop()
