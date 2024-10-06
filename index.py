@@ -60,17 +60,21 @@ def main_loop():
         for device in devices:
             # Bước 1: Click vào điểm thứ nhất (x=676, y=675) cho từng thiết bị
             adb_click(676, 675, device)
+            time.sleep(1)  # Chờ 1 giây
 
             # Bước 2: Tạo chuỗi ngẫu nhiên và nhập văn bản cho từng thiết bị
             random_chars = random_string(5)
-            input_text = f"Test Click{random_chars}"
+            input_text = f"Test Click {random_chars}"
             adb_input_text(input_text, device)
+            time.sleep(1)  # Chờ 1 giây
 
             # Bước 3: Gửi event Enter cho từng thiết bị
             adb_send_enter(device)
+            time.sleep(1)  # Chờ 1 giây
 
             # Bước 4: Click vào điểm thứ hai (x=859, y=675) cho từng thiết bị
             adb_click(859, 675, device)
+            time.sleep(1)  # Chờ 1 giây
 
         # Bước 5: Đếm ngược trong 30 giây trước khi lặp lại
         countdown(30)
