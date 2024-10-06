@@ -22,13 +22,13 @@ def adb_click(x, y, device_serial):
     adb_command(command, device_serial)
     print(f"[{device_serial}] Clicked at ({x}, {y})")
 
-def adb_input_text(device_serial):
-    text = "Tặng Acc Free"
-    unicode = [ord(char) for char in text]
-    unicode_str = ",".join(map(str, unicode))
-    command = f'shell am broadcast -a ADB_INPUT_CHARS --eia chars {unicode_str}'
+def adb_past_text(device_serial):
+    command = f'shell input keyevent 279'
     adb_command(command, device_serial)
-    print(f"Send to {device_serial}: {text}")
+    random_chars = random_string(5)
+    command = f'shell input text "%s{random_chars}"'
+    adb_command(command, device_serial)
+    print(f"Pasted text to {device_serial}")
 
 def adb_send_enter(device_serial):
     command = "shell input keyevent 66"
@@ -53,18 +53,14 @@ def main_loop():
     
     while True:
         for device in devices:
-            # adb_click(676, 675, device)
-            #time.sleep(1)
-
-            adb_input_text(device)
+            adb_click(676, 675, device)
             time.sleep(1)
-
-            # adb_send_enter(device)
-            # time.sleep(1)
-
-            # adb_click(859, 675, device)
-            # time.sleep(1)
-
+            adb_past_text(device)
+            time.sleep(1)
+            adb_send_enter(device)
+            time.sleep(1)
+            adb_click(859, 675, device)
+            time.sleep(1)
         countdown(30)
 
 if __name__ == "__main__":
